@@ -1,5 +1,14 @@
 package com.sweetshop.dto;
 
-public class AuthResponse {
+import lombok.*;
 
+@Data 
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthResponse {
+    private String id;
+    private String name;
+    private String email;
+    private String token;
+    private String password;
 }
