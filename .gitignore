@@ -32,6 +32,7 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
-
+### react ###
+node_modules/
 ### VS Code ###
 .vscode/
