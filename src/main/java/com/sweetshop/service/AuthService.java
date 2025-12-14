@@ -11,11 +11,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
-@service
+@Service
 public class AuthService {
     private final UserRepository userRepository;
- 
-    private String jwtSecret=jwt.secret;
+
+    
+    private String jwtSecret="mysecretkeymysecretkeymysecretkeymysecretkey";
 
     public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -26,26 +27,26 @@ public class AuthService {
             return new AuthResponse("Email already in use");
         }
 
-        User user = new User(request.getName(),request.getEmail(),request.getPassword());
+        User user = new User(null, request.getName(), request.getEmail(), request.getPassword());
         User savedUser = userRepository.save(user);
-        String token = generateToken(savedUser.getEmail());
+        String token = generateToken(savedUser.getId().toString());
 
         return new AuthResponse(
-            savedUser.getId(), 
-            savedUser.getName(), 
-            savedUser.getEmail(), 
-            savedUser.getPassword(),
-            token,
-            "registration successful"
-        );
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail(),
+                savedUser.getPassword(),
+                token,
+                "registration successful");
     }
-            
-    private String generateToken(User user) {
-        
+
+    private String generateToken(String subject) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + 86400000); // 1 day
         return Jwts.builder()
-                .Subject(user.getId())
-                .IssuedAt(new Date())
-                .Expiration(new Date(now.getTime() + 86400000))
+                .subject(subject)
+                .issuedAt(now)
+                .expiration(expiryDate)
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
                 .compact();
     }

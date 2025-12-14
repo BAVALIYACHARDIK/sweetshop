@@ -2,7 +2,7 @@
 
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.0'
+	id 'org.springframework.boot' version '3.2.1'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -54,11 +54,30 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
 	// testing 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.platform:junit-platform-launcher'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        // Exclude the older JUnit 4 engine if it's causing conflicts
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.11.0'
+    // explicit test utilities to ensure mockito and spring test annotations are available
+    testImplementation 'org.springframework.boot:spring-boot-test'
+    testImplementation 'org.springframework.boot:spring-boot-test-autoconfigure'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+	// embedded mongo autoconfigure for older Spring versions causes test-time NoClassDefFoundError
+	// (org.springframework.boot.autoconfigure.mongo.MongoProperties missing). Commenting out
+	// the incompatible artifact. If you need embedded Mongo for tests, add a compatible
+	// Flapdoodle artifact for Spring Boot 4 / Spring 6.
+	// testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.11.0'
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
+	testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
+

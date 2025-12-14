@@ -1,16 +1,28 @@
-import { usestate } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { registeruser } from '../services/api'; 
 
 function Register() {
-    const [name,setname]=usestate('');
-    const [email,setemail]=usestate('');
-    const [password,setpassword]=usestate('');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [status, setStatus] = useState(null);
 
-    const submit = async(e)=>{
+    const submit = async (e) => {
         e.preventDefault();
-        const response=await registeruser({name,email,password});
-        console.log(response);
-        
+        setStatus('loading');
+        try {
+            const response = await registeruser({ name, email, password });
+            if (response && response.message === 'Email already in use') {
+                setStatus({ ok: false, error: response.message });
+            } else {
+                setStatus({ ok: true, data: response });
+            }
+            console.log('register response', response);
+        } catch (err) {
+            setStatus({ ok: false, error: err.message || err });
+            console.error(err);
+        }
     };
 
     return (
@@ -22,7 +34,7 @@ function Register() {
                     <input 
                         type="text" 
                         value={name} 
-                        onChange={(e)=>setname(e.target.value)} 
+                        onChange={(e)=>setName(e.target.value)} 
                         required 
                     />
                 </div>
@@ -32,7 +44,7 @@ function Register() {
                     <input 
                         type="email" 
                         value={email} 
-                        onChange={(e)=>setemail(e.target.value)} 
+                        onChange={(e)=>setEmail(e.target.value)} 
                         required 
                     />
                 </div>
@@ -42,12 +54,16 @@ function Register() {
                     <input 
                         type="password" 
                         value={password} 
-                        onChange={(e)=>setpassword(e.target.value)} 
+                        onChange={(e)=>setPassword(e.target.value)} 
                         required 
                     />
                 </div>
                 <button type="submit">Register</button>
             </form>
+
+            {status === 'loading' && <p>Registering…</p>}
+            {status && status.ok && <p>Registered successfully</p>}
+            {status && status.ok === false && <p style={{ color: 'red' }}>{status.error}</p>}
         </div>
     );
 }
