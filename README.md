@@ -63,10 +63,12 @@ cd .\
 ```
 
 My Ai Usage
-- i used ai(github copilot) in creating backend spring boot structure and fronted react js structure so the data flow can be easy and scaling them is become easy when we use many api handler
+- i used ai(github copilot) in creating backend spring boot structure and fronted react js structure so the data flow can be easy (and it take care of SOLID principle indirectly ) and scaling them become easy when we use many api handlers
 - takes the help for api endpoint 
 - takes suggestion on how to use JWT token in fronted , use of lombok (for reducing boilerplate code)
 - and for creating ui form and its some css 
+- for writing the test code for ensuring correct data flow
+
 
 - Frontend (PowerShell):
 ```powershell
