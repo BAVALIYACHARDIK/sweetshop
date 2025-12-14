@@ -2,6 +2,7 @@ package com.sweetshop.service;
 
 import com.sweetshop.dto.AuthResponse;
 import com.sweetshop.dto.RegisterRequest;
+import com.sweetshop.dto.LoginRequest;
 import com.sweetshop.model.User;
 import com.sweetshop.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -15,8 +16,7 @@ import java.util.Date;
 public class AuthService {
     private final UserRepository userRepository;
 
-    
-    private String jwtSecret="mysecretkeymysecretkeymysecretkeymysecretkey";
+    private String jwtSecret = "mysecretkeymysecretkeymysecretkeymysecretkey";
 
     public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -38,6 +38,26 @@ public class AuthService {
                 savedUser.getPassword(),
                 token,
                 "registration successful");
+    }
+
+    public AuthResponse login(LoginRequest request) {
+        var userOpt = userRepository.findByEmail(request.getEmail());
+        if (userOpt.isEmpty()) {
+            return new AuthResponse("Invalid credentials");
+        }
+        User user = userOpt.get();
+        if (!user.getPassword().equals(request.getPassword())) {
+            return new AuthResponse("Invalid credentials");
+        }
+
+        String token = generateToken(user.getId().toString());
+        return new AuthResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPassword(),
+                token,
+                "login successful");
     }
 
     private String generateToken(String subject) {
