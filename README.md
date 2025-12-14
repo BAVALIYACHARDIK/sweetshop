@@ -62,6 +62,14 @@ cd .\
 .\gradlew.bat bootRun
 ```
 
+- Frontend (PowerShell):
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+
 My Ai Usage
 - i used ai(github copilot) in creating backend spring boot structure and fronted react js structure so the data flow can be easy (and it take care of SOLID principle indirectly ) and scaling them become easy when we use many api handlers
 - takes the help for api endpoint 
@@ -70,12 +78,7 @@ My Ai Usage
 - for writing the test code for ensuring correct data flow
 
 
-- Frontend (PowerShell):
-```powershell
-cd frontend
-npm install
-npm run dev
-```
+
 
 
 Notes
